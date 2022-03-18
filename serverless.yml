@@ -1,0 +1,41 @@
+service: ensayo-serverless-pgadmin
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+plugins:
+  -  serverless-offline
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+        - http:
+              path: hello
+              method: GET
+  createUser:
+    handler: db/db.createUser
+    events:
+        - http:
+              path: create-user
+              method: POST
+
+resources:
+  Resources:
+    pgDB:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        MasterUsername: postgres #Aqui colocas el nombre del usuario que tienes creado en la db
+        MasterUserPassword: Auto2022 #la clave del usuario
+        DatabaseName: example1 #nombre de la base de datos YA creada
+        Engine: postgres  
+        ScalingConfiguration:
+          AutoPause: true
+          MaxCapacity: 2
+          MinCapacity: 1
+          SecondsUntilAutoPause: 300
+        EnableHttpEndpoint: true
+        StorageEncrypted: true
