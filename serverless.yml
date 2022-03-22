@@ -22,6 +22,30 @@ functions:
         - http:
               path: create-user
               method: POST
+  getUsers:
+    handler: db/db.getUsers
+    events:
+        - http:
+              path: get-users
+              method: GET
+  getUserById:
+    handler: db/db.getUserById
+    events:
+        - http:
+              path: get-One-user/{ID}
+              method: GET
+  updateUser:
+    handler: db/db.updateUser
+    events:
+        - http:
+              path: update-user/{id}
+              method: PUT
+  deleteUser:
+    handler: db/db.deleteUser
+    events:
+        - http:
+              path: delete-user/{id}
+              method: DELETE
 
 resources:
   Resources:

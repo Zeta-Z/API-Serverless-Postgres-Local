@@ -16,13 +16,30 @@ const getUsers = async (req, res) => {
     res.status(200).json(response.rows);
 };
 
+
+*/
+const getUsers = async(event) =>{
+
+    const query = await pool.query('SELECT * FROM example1 ORDER BY id ASC')
+    //const users = json(query)
+    return Responses._200(query)
+}
+
+/*
+
 const getUserById = async (req, res) => {
     const id = parseInt(req.params.id);
     const response = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
     res.json(response.rows);
 };
 */
-
+const getUserById = async (event) =>{
+    
+    const {ID} = event.pathParameters
+    const query = await pool.query('SELECT * FROM example1 WHERE id =  $1', [ID]);
+    //const task = JSON.parse(query)
+    return Responses._200(query);
+};
 /*
 const createUser = async (req, res) => {
     const { id, name } = req.body;
@@ -66,6 +83,22 @@ const updateUser = async (req, res) => {
     res.json('User Updated Successfully');
 };
 
+*/
+const updateUser  = async (event) =>{
+
+    const {id} = event.pathParameters;
+    const {name} = JSON.parse(event.body);
+    console.log(name,id)
+    const query = await pool.query('UPDATE example1 SET name = $1 WHERE id = $2', [name,id]);
+    const query2 = await pool.query('SELECT * FROM example1 WHERE id = $1 ',[id])
+
+    return {
+
+        statusCode: 200,
+        body: JSON.stringify(query2,"Contacto actualizado exitosamente")
+    }
+}
+/*
 const deleteUser = async (req, res) => {
     const id = parseInt(req.params.id);
     await pool.query('DELETE FROM users where id = $1', [
@@ -74,11 +107,22 @@ const deleteUser = async (req, res) => {
     res.json(`User ${id} deleted Successfully`);
 };
 */
+
+const deleteUser = async (event) =>{
+
+    const {id} = event.pathParameters;
+    const query = await pool.query('DELETE FROM example1 where id = $1',[id]);
+    return{
+        statusCode: 200,
+        body: JSON.stringify("Contacto eliminado exitosamente!")
+    }
+}
+
 module.exports = {
-    //getUsers,
-    //getUserById,
-    createUser
-    //updateUser,
-    //deleteUser
+    getUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser
 };
 
